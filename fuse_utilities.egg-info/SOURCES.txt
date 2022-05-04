@@ -1,8 +1,0 @@
-README.md
-setup.py
-fuse_utilities/__init__.py
-fuse_utilities/main.py
-fuse_utilities.egg-info/PKG-INFO
-fuse_utilities.egg-info/SOURCES.txt
-fuse_utilities.egg-info/dependency_links.txt
-fuse_utilities.egg-info/top_level.txt

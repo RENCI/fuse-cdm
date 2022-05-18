@@ -3,6 +3,6 @@
 /dist/
 /build/
 .DS_Store
-fuse_cdm.iml
+fuse-cdm.iml
 *.egg-info
 

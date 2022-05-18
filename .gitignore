@@ -1,0 +1,8 @@
+/venv/
+/.idea/
+/dist/
+/build/
+.DS_Store
+fuse_cdm.iml
+*.egg-info
+

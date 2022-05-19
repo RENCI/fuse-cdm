@@ -7,7 +7,6 @@ from fastapi import Form
 from pydantic import BaseModel, AnyUrl, HttpUrl, EmailStr, Field, AnyHttpUrl
 
 
-
 def as_form(cls: Type[BaseModel]):
     new_params = [
         inspect.Parameter(
@@ -29,40 +28,10 @@ def as_form(cls: Type[BaseModel]):
 
 
 class Contents(BaseModel):
-    name: str = "string"
-    id: str = "string"
-    results_type: str = "string"
-    spec: str = "string"
-    size: List[int]
-    contents: List[str] = [
-        "string"
-    ]
-
-
-@as_form
-class AnalysisResults(BaseModel):
-    class_version: str = "1"
-    submitter_id: str = None
-    name: str = "Principal Component Analysis (PCA)"
-    start_time: str = None
-    end_time: str = None
-    mime_type: str = "application/json"
-    contents: List[Contents] = [
-        {
-            "name": "PCA table",
-            "results_type": "PCA",
-            "spec": "",
-            "size": [2, 3],
-            "contents": [
-                "gene1,1,2",
-                "gene2,3,4"
-            ]
-        }
-    ]
-    description: str = "Performs PCA on the input gene expression and returns a table with the requested number of principle components."
-
-
-
+    name: str = None
+    id: str = None
+    drs_uri: AnyUrl = None
+    contents: List[str] = []
 
 
 class Checksums(BaseModel):
@@ -80,13 +49,6 @@ class AccessMethods(BaseModel):
     access_url: AccessURL = None
     access_id: str = None
     region: str = None
-
-
-class Contents(BaseModel):
-    name: str = None
-    id: str = None
-    drs_uri: AnyUrl = None
-    contents: List[str] = []
 
 
 class JobStatus(str, Enum):
@@ -146,30 +108,6 @@ class ReferenceModel(str, Enum):
     MT_recon_2_2_entrez = "MT_recon_2_2_entrez.mat"
 
 
-@as_form
-class ToolParameters(BaseModel):
-    service_id: str
-    submitter_id: EmailStr = Field(..., title="email", description="unique submitter id (email)")
-    number_of_components: Optional[int] = 3
-    reference_model: Optional[ReferenceModel] = ReferenceModel.MT_recon_2_2_entrez
-    threshold_type: Optional[str] = "local"
-    percentile_or_value: Optional[str] = "value"
-    percentile: Optional[int] = 25
-    value: Optional[int] = 5
-    local_threshold_type: Optional[str] = "minmaxmean"
-    percentile_low: Optional[int] = 25
-    percentile_high: Optional[int] = 75
-    value_low: Optional[int] = 5
-    value_high: Optional[int] = 5
-    dataset: str = Field(...)
-    description: Optional[str] = Field(None, title="Description", description="detailed description of the requested analysis being performed (optional)")
-    expression_url: Optional[AnyHttpUrl] = Field(None, title="Gene expression URL", description="Optionally grab expression from an URL instead of uploading a file")
-    properties_url: Optional[AnyHttpUrl] = Field(None, title="Properties URL", description="Optionally grab properties from an URL instead of uploading a file")
-    archive_url: Optional[AnyHttpUrl] = Field(None, title="Archive URL", description="Optionally grab all the files from an URL to an archive instead of uploading file(s)")
-    results_provider_service_id: Optional[str] = Field(config()["results-provider-services"]["default"], title="Data Provider for Results",
-                                                       description="If not set, the system default will be provided. e.g., 'fuse-provider-upload'")
-
-
 class DataType(str, Enum):
     geneExpression = 'class_dataset_expression'
     resultsPCATable = 'class_results_PCATable'
@@ -193,6 +131,48 @@ class FileType(str, Enum):
 
 
 @as_form
+class Passports(BaseModel):
+    expand: bool = False
+    passports: List[str] = []
+
+
+@as_form
+class AnalysisResults(BaseModel):
+    class_version: str
+    submitter_id: str = None
+    name: str
+    start_time: str = None
+    end_time: str = None
+    mime_type: str
+    contents: List[Contents] = []
+    description: str
+
+
+@as_form
+class ToolParameters(BaseModel):
+    service_id: str
+    submitter_id: EmailStr = Field(..., title="email", description="unique submitter id (email)")
+    number_of_components: Optional[int] = 3
+    reference_model: Optional[ReferenceModel] = ReferenceModel.MT_recon_2_2_entrez
+    threshold_type: Optional[str] = "local"
+    percentile_or_value: Optional[str] = "value"
+    percentile: Optional[int] = 25
+    value: Optional[int] = 5
+    local_threshold_type: Optional[str] = "minmaxmean"
+    percentile_low: Optional[int] = 25
+    percentile_high: Optional[int] = 75
+    value_low: Optional[int] = 5
+    value_high: Optional[int] = 5
+    dataset: str = Field(...)
+    description: Optional[str] = Field(None, title="Description", description="detailed description of the requested analysis being performed (optional)")
+    expression_url: Optional[AnyHttpUrl] = Field(None, title="Gene expression URL", description="Optionally grab expression from an URL instead of uploading a file")
+    properties_url: Optional[AnyHttpUrl] = Field(None, title="Properties URL", description="Optionally grab properties from an URL instead of uploading a file")
+    archive_url: Optional[AnyHttpUrl] = Field(None, title="Archive URL", description="Optionally grab all the files from an URL to an archive instead of uploading file(s)")
+    results_provider_service_id: Optional[str] = Field(default="fuse-provider-upload", title="Data Provider for Results",
+                                                       description="If not set, the system default will be provided. e.g., 'fuse-provider-upload'")
+
+
+@as_form
 class ProviderParameters(BaseModel):
     service_id: str = Field(..., title="Provider service id", description="id of service used to upload this object")
     submitter_id: EmailStr = Field(..., title="email", description="unique submitter id (email)")
@@ -205,3 +185,5 @@ class ProviderParameters(BaseModel):
     aliases: Optional[str] = Field(None, title="Optional list of aliases for this object")
     checksums: Optional[List[Checksums]] = Field(None, title="Optional checksums for the object",
                                                  description="enables verification checking by clients; this is a json list of objects, each object contains 'checksum' and 'type' fields, where 'type' might be 'sha-256' for example.")
+    results_provider_service_id: Optional[str] = Field(default="fuse-provider-upload", title="Data Provider for Results",
+                                                       description="If not set, the system default will be provided. e.g., 'fuse-provider-upload'")

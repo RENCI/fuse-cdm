@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 # This call to setup() does all the work
 setup(
-    name="fuse_utilities",
+    name="fuse_cdm",
     version="1.1.0",
     description="Access fuse utilities to work with cellfie data analysis platform",
     long_description=README,

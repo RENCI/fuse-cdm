@@ -1,8 +1,8 @@
-/venv/
-/.idea/
-/dist/
-/build/
+venv/
+.idea/
+dist/
+build/
 .DS_Store
-fuse-cdm.iml
+*.iml
 *.egg-info
 

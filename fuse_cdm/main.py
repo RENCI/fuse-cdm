@@ -98,14 +98,14 @@ class ServiceIOField(str, Enum):
 
 class ReferenceModel(str, Enum):
     MT_iCHOv1_final = "MT_iCHOv1_final.mat"
-    MT_iHsa = "MT_iHsa.mat"
     MT_iMM1415 = "MT_iMM1415.mat"
-    MT_inesMouseModel = "MT_inesMouseModel.mat"
+    MT_recon_2_2_entrez = "MT_recon_2_2_entrez.mat"
     MT_iRno = "MT_iRno.mat"
     MT_quek14 = "MT_quek14.mat"
-    MT_recon_1 = "MT_recon_1.mat"
-    MT_recon_2 = "MT_recon_2.mat"
-    MT_recon_2_2_entrez = "MT_recon_2_2_entrez.mat"
+    # MT_iHsa = "MT_iHsa.mat"
+    # MT_inesMouseModel = "MT_inesMouseModel.mat"
+    # MT_recon_1 = "MT_recon_1.mat"
+    # MT_recon_2 = "MT_recon_2.mat"
 
 
 class DataType(str, Enum):
